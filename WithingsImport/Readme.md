@@ -1,0 +1,1 @@
+Work in progress, hard coded paths, no UI yet.  I think I like the generic design we put in the Python version better than this one, might work towards that.  This one does have the code for reconciling timestamps between data sets with different sample rates.
