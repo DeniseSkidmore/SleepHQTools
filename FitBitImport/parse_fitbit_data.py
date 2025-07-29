@@ -31,10 +31,12 @@ def fitbit_data_to_generic(data):
     """Convert Fitbit data to generic SPO2 data format."""
     generic_data = []
     try:
-        for entry in data['minutes']:
+        for index, entry in enumerate(data['minutes']):
             generic_data.append(GenericFitnessRecord(datetime.fromisoformat(entry['minute']), int(entry['value'])))
     except KeyError as e:
-        print(f"Unexpected data format: missing key {e}")
+        print(f"Unexpected data format: missing key {e} from item {index}: {entry}")
+    except ValueError as e:
+        print(f"Error parsing date or value: {e} in item {index}: {entry}")
     return generic_data
 
 def write_output_file(output_dir: Path, spo2_data: list[GenericFitnessRecord], hr_data: list[GenericFitnessRecord], motion_data: list[GenericFitnessRecord]):
