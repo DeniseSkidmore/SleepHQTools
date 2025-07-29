@@ -208,3 +208,4 @@ __marimo__/
 **/bin/**
 **/obj/**
 **.user
+/Tests/**/O2Ring_*.csv
