@@ -28,17 +28,14 @@ class GenericFitnessRecord:
 
 
 def fitbit_data_to_generic(data):
-    """Convert Fitbit data to generic SPO2 data format.
-    
-    This function assumes the input data is in the format provided by Fitbit API.
-    """
-    # Extracting the 'spo2' data from the Fitbit data structure
+    """Convert Fitbit data to generic SPO2 data format."""
     generic_data = []
-    # get to the data point list from the JSON structure
-    for entry in data[0]['minutes']:
-        generic_data.append(GenericFitnessRecord(datetime.fromisoformat(entry['minute']), entry['value']))
+    try:
+        for entry in data['minutes']:
+            generic_data.append(GenericFitnessRecord(datetime.fromisoformat(entry['minute']), int(entry['value'])))
+    except KeyError as e:
+        print(f"Unexpected data format: missing key {e}")
     return generic_data
-
 
 def write_output_file(output_dir: Path, spo2_data: list[GenericFitnessRecord], hr_data: list[GenericFitnessRecord], motion_data: list[GenericFitnessRecord]):
     """Write the data to a CSV file.
@@ -63,7 +60,7 @@ def write_output_file(output_dir: Path, spo2_data: list[GenericFitnessRecord], h
             writer.writerow({
                 # time format from Android ViHealth App: 00:56:46 25/07/2025
                 'Time': entry.datetime.strftime('%H:%M:%S %d/%m/%Y'),
-                'Oxygen Level': entry['value'],
+                'Oxygen Level': entry.value,
                 'Pulse Rate': 0,
                 'Motion': 0
             })
